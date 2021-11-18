@@ -1,0 +1,108 @@
+homeassistant:
+  customize:
+    package.node_anchors:
+      customize: &customize
+        package: 'Statistiche HA Home Assistant OS Raspberry 0.1'
+        author: 'Domenico Ceccarelli'
+        reference: ' WebSite: https://github.com/riddik14/statistiche-raspberry/'
+        
+#logger:
+#  default: warn
+#  logs:
+#   homeassistant.bootstrap: info
+
+sensor:
+
+  - platform: dnsip
+    hostname: tuodns.duckdns.org #inserire indirizzo duckdns o servzio ddns personale
+    name: ip-pubblico
+    resolver: 8.8.8.8
+    scan_interval: 5
+    
+ # - platform: command_line
+ #   name: CPU Temperature
+ #   command: "cat /sys/class/thermal/thermal_zone0/temp"
+ #   unit_of_measurement: "°C"
+ #   value_template: "{{ value | multiply(0.001) | round(1) }}"
+    
+ # - platform: uptime
+ #   name: uptime_of_hassio
+   - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /
+      - type: memory_free
+      - type: swap_free
+      - type: processor_use
+      - type: last_boot
+      - type: memory_use_percent
+      - type: ipv4_address
+        arg: eth0
+
+
+  - platform: rest
+    name: Versione HA Corrente 
+    resource: https://pypi.python.org/pypi/homeassistant/json
+    value_template: '{{ value_json.info.version }}'
+    scan_interval: 21600 # ogni 6 ore
+
+  - platform: command_line
+    name: Versione HA Installata
+    command: "cat /config/.HA_VERSION"
+    scan_interval: 21600  # ogni 6 ore
+  
+
+      
+  - platform: template
+    sensors:
+      disk_total:
+        value_template: "{{ ( states('sensor.disk_use')|float(0) + states('sensor.disk_free')|float(0) )| round (1) }}"
+
+      template_uptime_of_hassio:
+        value_template: >
+          {% set time = (as_timestamp(states.sensor.date_time_iso.state) - as_timestamp(states.sensor.time_online.state))/60 | float %}
+          {% set days = (time / (24*60)) | int %}
+          {% set hours = ((time / 60) - ((time / (24*60)) | int ) * 24) | int %}
+          {% set minutes = ((((time / 60) - (time / 60) | int) * 60) | round(1)) | int %}
+          {% set seconds = ((time - (time | int)) * 60) | int %}
+          {{days}}g {% if hours < 10 %}0{{ hours }}{% else %}{{ hours }}{% endif %}:{% if minutes < 10 %}0{{ minutes }}{% else %}{{ minutes }}{% endif %}:{% if seconds < 10 %}0{{ seconds }}{% else %}{{ seconds }}{% endif %}
+
+      
+
+      
+
+  - platform: rest
+    resource: https://github.com/riddik14/statistiche-raspberry/version.json
+    name: Ultima Versione Statistiche Raspberry
+    value_template: '{{ value_json.last_update }}'
+
+input_boolean:
+  impostazioni_statistiche_rasp:
+    name: Impostazioni Stat Rasp
+    icon: mdi:cog-outline
+
+automation: 
+- alias: Notifica Aggiornamento Disponibile Statistiche Raspberry
+  trigger:
+    - platform: state
+      entity_id: sensor.ultima_versione_statistiche_raspberry
+      to: '1.1'
+  condition: []
+  action:
+  - data_template:
+      message: "Statistiche Raspberry {{ states('sensor.ultima_versione_statistiche_raspberry') }} è ora disponibile."
+      title: "Nuovo Aggiornamento"
+    service: notify.notify # una notifica verrà inviata a tutti i dispositivi 
+    
+- alias: Notifica Avvio HUB HA
+  trigger:
+  - platform: homeassistant
+    event: start
+  action:
+  - delay: 00:00:02
+  
+  - data_template:
+      message: Il Sistema è Operativo
+      title: HUB Domotico
+    service: notify.notify # una notifica verrà inviata a tutti i dispositivi 
+    
