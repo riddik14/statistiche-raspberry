@@ -1,0 +1,357 @@
+cards:
+  - cards:
+      - id: raspberry_statistiche
+        type: custom:config-template-card
+        variables:
+          - states['sensor.disk_use_percent'].state
+          - states['sensor.versione_ha_installata'].state
+          - states['sensor.swap_free'].state
+          - states['sensor.disk_use_percent'].state
+          - states['sensor.memory_use_percent'].state
+          - states['sensor.processor_use_percent'].state
+          - states['sensor.raspcputemp'].state
+        entities:
+          - sensor.homeassistant_version
+          - sensor.disk_use_percent
+          - sensor.swap_free
+          - sensor.disk_use_percent
+          - sensor.memory_use_percent
+          - sensor.processor_use_percent
+          - sensor.raspcputemp
+        card:
+          type: entities
+          show_header_toggle: 'off'
+          style: |
+            .card-header {
+              padding: 0px 0px 0px 0px !important;
+            }
+          entities:
+            - type: section
+              label: >-
+                ${ 'Statistiche Raspberry V 1.0 -- Versione HA Installata: ' +
+                vars[1] }
+            - type: custom:hui-vertical-stack-card
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: picture
+                      style: |
+                        ha-card { 
+                            --paper-card-background-color: 'rgba(0, 0, 0, 0.0)';
+                            --ha-card-background: "rgba(0, 0, 0, 0.0)";
+                            --ha-card-box-shadow: 'none';
+                        }
+                      image: >-
+                        https://m.media-amazon.com/images/I/81hyqDgm8vL._AC_SL1500_.jpg
+                    - type: custom:button-card
+                      layout: icon_name_state2nd
+                      show_icon: true
+                      show_state: true
+                      styles:
+                        grid:
+                          - grid-template-columns: 50px auto
+                        icon:
+                          - padding: 0px 0px
+                          - height: 30px
+                          - width: 30px
+                        card:
+                          - '--ha-card-background': rgba(0, 0, 0, 0.0)
+                          - '--ha-card-box-shadow': none
+                        state:
+                          - padding: 0px 10px
+                          - justify-self: start
+                          - font-family: Roboto, sans-serif
+                          - font-size: 15px
+                        name:
+                          - padding: 0px 10px
+                          - justify-self: start
+                          - color: var(--primary-text-color)
+                      entity: sensor.template_uptime_of_hassio
+                      name: Online
+                      icon: mdi:clock-outline
+                - type: custom:bar-card
+                  show_icon: true
+                  align: split
+                  columns: 1
+                  max: 100
+                  positions:
+                    icon: inside
+                    indicator: inside
+                    name: inside
+                    value: inside
+                  unit_of_measurement: '%'
+                  severity:
+                    - color: '#1e90ff'
+                      from: 0
+                      to: 49
+                    - color: orange
+                      from: 50
+                      to: 80
+                    - color: red
+                      from: 81
+                      to: 100
+                  style: |
+                    ha-card { 
+                        --paper-card-background-color: 'rgba(0, 0, 0, 0.0)';
+                        --ha-card-background: "rgba(0, 0, 0, 0.0)";
+                        --paper-item-icon-color: 'var(--text-primary-color';
+                        --ha-card-box-shadow: 'none';
+                    }
+                  entities:
+                    - entity: sensor.disk_use_percent
+                  name: ${ 'SSD (' + vars[3] + 'Gb/' + '128.0' + 'Gb)' }
+                  entity_row: true
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:bar-card
+                      show_icon: true
+                      align: split
+                      columns: 1
+                      max: 100
+                      positions:
+                        icon: inside
+                        indicator: inside
+                        name: inside
+                        value: inside
+                      unit_of_measurement: '%'
+                      severity:
+                        - color: '#1e90ff'
+                          from: 0
+                          to: 49
+                        - color: Orange
+                          from: 50
+                          to: 80
+                        - color: red
+                          from: 81
+                          to: 100
+                      style: |
+                        ha-card { 
+                          --paper-card-background-color: 'rgba(0, 0, 0, 0.0)';
+                          --ha-card-background: "rgba(0, 0, 0, 0.0)";
+                          --paper-item-icon-color: 'var(--text-primary-color';
+                          --ha-card-box-shadow: 'none';
+                        }
+                      entity: sensor.memory_use_percent
+                      name: RAM
+                      entity_row: true
+                    - type: custom:bar-card
+                      show_icon: true
+                      align: split
+                      columns: 1
+                      max: 100
+                      positions:
+                        icon: inside
+                        indicator: inside
+                        name: inside
+                        value: inside
+                      unit_of_measurement: '%'
+                      severity:
+                        - color: '#1e90ff'
+                          from: 0
+                          to: 49
+                        - color: Orange
+                          from: 50
+                          to: 80
+                        - color: red
+                          from: 81
+                          to: 100
+                      style: |
+                        ha-card { 
+                          --paper-card-background-color: 'rgba(0, 0, 0, 0.0)';
+                          --ha-card-background: "rgba(0, 0, 0, 0.0)";
+                          --paper-item-icon-color: 'var(--text-primary-color';
+                          --ha-card-box-shadow: 'none';
+                        }
+                      entity: sensor.processor_use_percent
+                      name: CPU
+                      entity_row: true
+                - type: custom:bar-card
+                  show_icon: true
+                  align: split
+                  columns: 1
+                  max: 2048
+                  positions:
+                    icon: inside
+                    indicator: inside
+                    name: inside
+                    value: inside
+                  unit_of_measurement: MB
+                  severity:
+                    - color: lightred
+                      from: 0
+                      to: 200
+                    - color: lightorange
+                      from: 200
+                      to: 300
+                    - color: lightgreen
+                      from: 500
+                      to: 2096
+                  style: |
+                    ha-card { 
+                        --paper-card-background-color: 'rgba(0, 0, 0, 0.0)';
+                        --ha-card-background: "rgba(0, 0, 0, 0.0)";
+                        --paper-item-icon-color: 'var(--text-primary-color';
+                        --ha-card-box-shadow: 'none';
+                    }
+                  entities:
+                    - entity: sensor.swap_free
+                  name: ${ 'SWAP (' + vars[2] + 'MB/' + 2096 + 'MB)' }
+                  entity_row: true
+                - type: custom:mini-graph-card
+                  height: 30
+                  line_width: 2
+                  font_size: 70
+                  hours_to_show: 24
+                  points_per_hour: 1
+                  show:
+                    extrema: true
+                    fill: true
+                  style: |
+                    ha-card { 
+                      --ha-card-background: "rgba(0, 0, 0, 0.0)";
+                      --ha-card-box-shadow: 'none';
+                      border-radius: 5px;
+                    }
+                    .info.flex {
+                      font-size: 12px !important;
+                    }
+                  entities:
+                    - sensor.raspcputemp
+                  name: Temperatura CPU
+                  color_thresholds:
+                    - value: 30
+                      color: '#1e90ff'
+                    - value: 60
+                      color: '#ff4500'
+                    - value: 80
+                      color: "#ff0000\t"
+      - type: entities
+        entities:
+          - entity: input_boolean.impostazioni_statistiche_rasp
+            name: Mostra Dettagli
+            state_color: true
+      - type: conditional
+        conditions:
+          - entity: input_boolean.impostazioni_statistiche_rasp
+            state: 'on'
+          - entity: input_boolean.impostazioni_statistiche_rasp
+            state_not: 'off'
+        card:
+          entities:
+            - entity: sensor.date
+              icon: null
+              name: Giorno
+            - entity: sensor.time
+              icon: null
+              name: Orologio
+            - entity: sensor.last_boot
+              icon: mdi:alarm
+              name: Server Avviato
+            - entity: sensor.template_uptime_of_hassio
+              icon: mdi:alarm
+              name: Ultimo Riavvio HA
+            - entity: sensor.ha_start_time
+              icon: mdi:home-assistant
+              name: Tempo di Avvio HA
+            - entity: sensor.versione_ha_installata
+              icon: mdi:update
+              name: Versione HA Installata
+            - entity: sensor.versione_ha_corrente
+              icon: mdi:update
+              name: Versione HA Disponibile
+            - entity: sensor.processor_use_percent
+              name: CPU Utilizzata
+              icon: mdi:memory
+            - entity: sensor.raspcputemp
+              icon: null
+              name: Temperatura CPU
+            - entity: sensor.disk_use_percent
+              icon: null
+              name: Disco Utilizzato
+            - entity: sensor.swap_free
+              icon: null
+              name: Disco Libero
+            - entity: sensor.disk_use_percent
+              name: Percentuale Disco Usato
+            - entity: sensor.memory_use_percent
+              icon: mdi:memory
+              name: RAM Utilizzata
+            - entity: sensor.memory_free
+              icon: mdi:memory
+              name: RAM Libera
+            - entity: sensor.memory_use_percent
+              name: Percenturale Ram Utilizzata
+            - entity: sensor.ipv4_address_eth0
+              icon: null
+              name: Indirizzo IP Locale
+            - entity: sensor.ip_pubblico
+              icon: mdi:clipboard-flow
+              name: Indirizzo IP Pubblico
+          show_header_toggle: false
+          title: null
+          type: entities
+      - type: conditional
+        conditions:
+          - entity: input_boolean.impostazioni_statistiche_rasp
+            state: 'on'
+          - entity: input_boolean.impostazioni_statistiche_rasp
+            state_not: 'off'
+        card:
+          type: entities
+          entities:
+            - entity: automation.notifica_avvio_hub_ha
+              name: Notifica Avvio HUB
+              icon: mdi:bell-ring
+              state_color: true
+            - entity: >-
+                automation.notifica_aggiornamento_disponibile_statistiche_raspberry
+              name: Notifica Push Update
+              icon: mdi:bell-ring
+              state_color: true
+            - entity: sensor.ultima_versione_statistiche_raspberry
+              name: Ultima Versione Disponibile
+              icon: mdi:update
+          title: 'Update:'
+          show_header_toggle: false
+      - type: conditional
+        conditions:
+          - entity: input_boolean.impostazioni_statistiche_rasp
+            state_not: 'off'
+        card:
+          type: markdown
+          content: >-
+            Statistiche Raspberry
+
+            -------------------
+
+            ____
+
+            Scarica Update: 
+
+            [Download](https://github.com/riddik14/statistiche-raspberry/archive/refs/heads/main.zip/)
+
+
+            ----
+    type: vertical-stack
+  - type: entities
+    entities:
+      - entity: sensor.start_domain
+        name: Domini
+      - entity: binary_sensor.rpi_power_status
+      - entity: automation.purge_db
+      - entity: script.repack_db
+      - entity: sensor.db_size
+      - entity: sensor.db_size_shm
+      - entity: sensor.db_size_wal
+      - entity: sensor.log
+      - entity: sensor.log_1
+      - entity: sensor.log_fault
+    state_color: true
+  - type: entity
+    entity: switch.adguard_protection
+  - type: entities
+    entities:
+      - entity: switch.adguard_protection
+      - entity: switch.adguard_filtering
+      - entity: switch.adguard_parental_control
+type: vertical-stack
