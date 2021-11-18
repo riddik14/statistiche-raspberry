@@ -72,9 +72,9 @@ sensor:
       
 
   - platform: rest
-    resource: https://github.com/riddik14/statistiche-raspberry/version.json
+    resource: https://raw.githubusercontent.com/riddik14/statistiche-raspberry/master/version.json
     name: Ultima Versione Statistiche Raspberry
-    value_template: '{{ value_json.last_update }}'
+    value_template: '{{ value_json.versione }}'
 
 input_boolean:
   impostazioni_statistiche_rasp:
